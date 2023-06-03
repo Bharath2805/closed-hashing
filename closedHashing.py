@@ -107,16 +107,50 @@ class Dictionary:
     return abs(hash(key)) % self.capacity
 
 #put function
-
+  def __setitem__(self,key,value):
+    return self.put(key,value)
   def put(self,key,value):
     bucketIndex = hashFunction(key)
     nodeIndex = getNodeIndex(bucketIndex,key)
     if nodeIndex == -1 :
       self.bucket[bucketIndex].append(key,value)
+      self.size +=1
+      #loadFactor
+      loadFactor =self.size/self.capacity
+      if loadFactor >= 2 :
+        self.rehash()
     else:
       node = self.buckets[bucketIndex].get_node_at_index(nodeIndex)
       node.value = value
+  # rehash doubling the size of array
 
-  def getNodeIndex(bucketIndex,key):
+  def rehash(self):
+    self.capacity = self.capacity * 2
+    oldBuckets = self.buckets
+    self.size = 0
+    self.buckets = self.makeArray(self.capacity)
+
+    for i in oldBuckets:
+      for j in range(i.size()):
+        node = i.get_node_at_index(j)
+        keyItem = node.key
+        valueItem = node.key
+        self.put(keyItem,valueItem)
+
+  def getNodeIndex(self,bucketIndex,key):
     nodeIndex = self.buckets[bucketIndex].search(key) 
     return nodeIndex
+  
+  def __getitem__(self,key):
+    return self.get(key)
+
+
+  def get(self,key):
+    bucketIndex = hashFunction(key)
+    response = self.buckets[bucketIndex].search(key)
+    if response == -1 :
+      return -1
+    else:
+      node = self.buckets[bucketIndex].get_node_at_index(response)
+      return node.value
+
