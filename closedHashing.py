@@ -113,7 +113,7 @@ class Dictionary:
     bucketIndex = hashFunction(key)
     nodeIndex = getNodeIndex(bucketIndex,key)
     if nodeIndex == -1 :
-      self.bucket[bucketIndex].append(key,value)
+      self.buckets[bucketIndex].append(key,value)
       self.size +=1
       #loadFactor
       loadFactor =self.size/self.capacity
